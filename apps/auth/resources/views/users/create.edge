@@ -1,0 +1,134 @@
+<div class="container lg:w-[32rem] mx-auto px-4 py-10">
+  <form action="{{ route('users.store') }}" method="post">
+    {{ csrfField() }}
+
+    @if(flashMessages.has('inputErrorsBag'))
+      <div role="alert" class="rounded border-s-4 border-red-500 bg-red-50 p-4">
+        <strong class="block font-medium text-red-800"> Something went wrong </strong>
+
+        <p class="mt-2 text-sm text-red-700">
+          {{ JSON.stringify(flashMessages.get('inputErrorsBag')) }}
+        </p>
+      </div>
+    @end
+
+    <div class="space-y-12">
+      <div class="border-b border-gray-900/10 pb-12">
+        <h2 class="text-base font-semibold leading-7 text-gray-900">New User</h2>
+        <p class="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
+
+        <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+          <div class="sm:col-span-3">
+            <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">First name</label>
+            <div class="mt-2">
+              <input
+                type="text"
+                name="firstName"
+                id="firstName"
+                autocomplete="given-name"
+                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                value="{{ old('firstName', '') }}"
+              >
+            </div>
+          </div>
+
+          <div class="sm:col-span-3">
+            <label for="last-name" class="block text-sm font-medium leading-6 text-gray-900">Last name</label>
+            <div class="mt-2">
+              <input
+                type="text"
+                name="lastName"
+                id="lastName"
+                autocomplete="family-name"
+                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                value="{{ old('lastName', '') }}"
+              >
+            </div>
+          </div>
+
+          <div class="sm:col-span-4">
+            <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
+
+            <div class="mt-2">
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autocomplete="email"
+                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                value="{{ old('email', '') }}"
+              >
+            </div>
+
+            @inputError('email')
+              @each(message in $messages)
+                <p class="mt-1 text-sm text-red-600">{{ message }}</p>
+              @end
+            @end
+          </div>
+
+          <div class="sm:col-span-4">
+            <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Password</label>
+
+            <div class="mt-2">
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autocomplete="password"
+                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              >
+            </div>
+
+            @inputError('password')
+              @each(message in $messages)
+                <p class="mt-1 text-sm text-red-600">{{ message }}</p>
+              @end
+            @end
+          </div>
+        </div>
+
+        <div class="mt-10 space-y-10">
+          <fieldset>
+            <legend class="text-sm font-semibold leading-6 text-gray-900">Role</legend>
+
+            <!--
+            <p class="mt-1 text-sm leading-6 text-gray-600">These are delivered via SMS to your mobile phone.</p>
+            -->
+
+            <div class="mt-6 space-y-6">
+              @let(roles = ['Admin', 'Accountant', 'User', 'Disabled'])
+
+              @each(role in roles)
+                <div class="flex items-center gap-x-3">
+                  @let(roleId = role.toLowerCase())
+
+                  <input
+                    id="{{ 'role' + roleId }}"
+                    name="role"
+                    type="radio"
+                    class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                    value="{{ roleId }}"
+                  >
+
+                  <label for="{{ 'role' + roleId }}" class="block text-sm font-medium leading-6 text-gray-900">{{ role }}</label>
+                </div>
+              @end
+
+              @inputError('role')
+                @each(message in $messages)
+                  <p class="mt-1 text-sm text-red-600">{{ message }}</p>
+                @end
+              @end
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6 flex items-center justify-end gap-x-6">
+      <a href="{{ route('users.index') }}" class="text-sm font-semibold leading-6 text-gray-900">Cancel</a>
+      <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,76 @@
+<header class="bg-gray-50">
+  <div class="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+    <div class="sm:flex sm:items-center sm:justify-between">
+      <div class="text-center sm:text-left">
+        <h1 class="text-2xl font-bold text-gray-900 sm:text-3xl">Auth Service</h1>
+
+        <!--
+        <p class="mt-1.5 text-sm text-gray-500">Let's write a new blog post! 🎉</p>
+        -->
+      </div>
+
+      <div class="mt-4 flex flex-col gap-4 sm:mt-0 sm:flex-row sm:items-center">
+        <button
+          class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-5 py-3 text-gray-500 transition hover:text-gray-700 focus:outline-none focus:ring"
+          type="button"
+        >
+          <span class="text-sm font-medium"> View Website </span>
+
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+            />
+          </svg>
+        </button>
+
+        <a href="{{ route('users.create') }}"
+          class="block rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring"
+        >
+          Create User
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
+      <thead class="text-left">
+        <tr>
+          <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Name</th>
+          <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Email</th>
+          <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Role</th>
+          <th class="px-4 py-2"></th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-gray-200">
+        @each(user in users)
+        <tr>
+          <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ user.firstName || '' }} {{ user.lastName || '' }}</td>
+          <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ user.email }}</td>
+          <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ user.role }}</td>
+          <td class="whitespace-nowrap px-4 py-2 text-right">
+            <a
+              href="{{ route('users.edit', { id: user.id }) }}"
+              class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700"
+            >
+              Edit
+            </a>
+          </td>
+        </tr>
+        @end
+      </tbody>
+    </table>
+  </div>
+</div>
