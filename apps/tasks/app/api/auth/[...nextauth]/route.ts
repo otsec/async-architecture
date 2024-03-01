@@ -1,6 +1,11 @@
 import NextAuth from 'next-auth'
+import { PrismaAdapter } from '@auth/prisma-adapter'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 export const authOptions = {
+  adapter: PrismaAdapter(prisma),
   providers: [
     {
       id: 'custom',
@@ -11,15 +16,12 @@ export const authOptions = {
       authorization: `${process.env.POPUG_OAUTH_BASE_URL}/oauth/authorize`,
       token: `${process.env.POPUG_OAUTH_BASE_URL}/oauth/token`,
       userinfo: `${process.env.POPUG_OAUTH_BASE_URL}/oauth/userinfo`,
-      profile(profile: { id: string }) {
-        return {
-          id: "1234",
-          name: "test"
-        }
+      profile(profile: any) {
+        return profile
       },
     }
   ],
-}
+} as any
 
 const handler = NextAuth(authOptions)
 
