@@ -16,13 +16,13 @@ export default class UsersController {
   async store({ request, response }: HttpContext) {
     const payload = await request.validateUsing(createUserValidator)
 
-    await User.create(payload);
+    await User.create(payload)
 
     return response.redirect().toRoute('users.index')
   }
 
   async edit({ request, view }: HttpContext) {
-    const user = await User.findByOrFail('id', request.param('id'));
+    const user = await User.findByOrFail('id', request.param('id'))
 
     return view.render('users/edit', { user })
   }
@@ -30,9 +30,9 @@ export default class UsersController {
   async update({ request, response }: HttpContext) {
     const payload = await request.validateUsing(updateUserValidator)
 
-    const user = await User.findByOrFail('id', request.param('id'));
+    const user = await User.findByOrFail('id', request.param('id'))
     user.merge(payload)
-    await user.save();
+    await user.save()
 
     return response.redirect().toRoute('users.index')
   }

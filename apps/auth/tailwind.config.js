@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
-    "./resources/**/*.edge",
-    "./resources/**/*.{js,ts,jsx,tsx,vue}",
+    './resources/**/*.edge',
+    './resources/**/*.{js,ts,jsx,tsx,vue}',
   ],
   theme: {
     extend: {},
@@ -11,4 +11,3 @@ export default {
     require('@tailwindcss/forms'),
   ],
 }
-
