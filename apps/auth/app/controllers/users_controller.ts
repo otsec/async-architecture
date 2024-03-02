@@ -1,7 +1,11 @@
+import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
 import { createUserValidator, updateUserValidator } from '#validators/user'
 import User from '#models/user'
+import UserCreated from '#events/user_created'
+import UserUpdated from '#events/user_updated'
 
+@inject()
 export default class UsersController {
   async index({ view }: HttpContext) {
     const users = await User.query().orderBy('id', 'desc').select()
@@ -16,7 +20,9 @@ export default class UsersController {
   async store({ request, response }: HttpContext) {
     const payload = await request.validateUsing(createUserValidator)
 
-    await User.create(payload)
+    const user = await User.create(payload)
+
+    await UserCreated.dispatch(user)
 
     return response.redirect().toRoute('users.index')
   }
@@ -33,6 +39,8 @@ export default class UsersController {
     const user = await User.findByOrFail('id', request.param('id'))
     user.merge(payload)
     await user.save()
+
+    await UserUpdated.dispatch(user)
 
     return response.redirect().toRoute('users.index')
   }
