@@ -50,6 +50,7 @@
     "vite": "^5.0.12"
   },
   "dependencies": {
+    "@adonisjs/ally": "^5.0.2",
     "@adonisjs/auth": "^9.1.1",
     "@adonisjs/core": "^6.2.2",
     "@adonisjs/lucid": "^20.1.0",
