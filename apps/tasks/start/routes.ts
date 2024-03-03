@@ -9,8 +9,9 @@
 
 import router from '@adonisjs/core/services/router'
 const AuthController = () => import('#controllers/auth_controller')
+const HomeController = () => import('#controllers/home_controller')
 
-router.on('/').render('pages/home')
+router.get('/', [HomeController, 'index'])
 
-router.get('/auth/redirect', [AuthController, 'redirect'])
+router.get('/auth/redirect', [AuthController, 'redirect']).as('login')
 router.get('/auth/callback', [AuthController, 'callback'])
