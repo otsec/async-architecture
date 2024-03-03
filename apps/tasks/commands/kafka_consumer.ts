@@ -3,6 +3,7 @@ import type { CommandOptions } from '@adonisjs/core/types/ace'
 import { Kafka, KafkaMessage } from 'kafkajs'
 import busConfig from '#config/bus'
 import { anyEventValidator } from '#validators/event_bus'
+import User from '#models/user'
 
 type UserEvent = {
   name: 'UserCreated' | 'UserUpdated'
@@ -21,7 +22,10 @@ export default class KafkaConsumer extends BaseCommand {
   static commandName = 'kafka:consumer'
   static description = 'Start event bus consumer'
 
-  static options: CommandOptions = {}
+  static options: CommandOptions = {
+    startApp: true,
+    staysAlive: true,
+  }
 
   async run() {
     this.logger.info('Hello world from "KafkaConsumer"')
@@ -69,6 +73,19 @@ export default class KafkaConsumer extends BaseCommand {
   }
 
   async handleUserCudEvent(event: UserEvent) {
-    console.log(event)
+    const { firstName, lastName } = event.payload;
+    const fullName = [firstName, lastName]
+        .filter(segment => !!segment)
+        .join(' ')
+
+    console.log('event', event.payload)
+
+    await User.updateOrCreate({
+      id: event.payload.id,
+    }, {
+      role: event.payload.role,
+      email: event.payload.email,
+      fullName: fullName,
+    })
   }
 }
