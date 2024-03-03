@@ -7,14 +7,22 @@ export default class KafkaEventStream {
     const producer = await app.container.make('kafka-producer')
 
     if (event instanceof UserCreated || event instanceof UserUpdated) {
+      const eventName = event.constructor.name
       const user = event.user;
 
-      const data = user.serialize()
+      const messageKey = `${eventName}_${user.id}`
+      const messageValueJson = {
+        name: eventName,
+        payload: user.serialize(),
+      }
 
       await producer.send({
         topic: 'default',
         messages: [
-          { key: 'user_' + user.id, value: JSON.stringify(data) },
+          {
+            key: messageKey,
+            value: JSON.stringify(messageValueJson),
+          }
         ],
       })
     }
