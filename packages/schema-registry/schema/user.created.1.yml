@@ -1,0 +1,32 @@
+---
+$schema: http://json-schema.org/draft-07/schema
+title: UserCreated v1
+
+type: object
+properties:
+  event_id:
+    type: string
+    $comment: UUID
+  event_version:
+    type: number
+  event_name:
+    const: UserCreated
+  event_time:
+    type: number
+    $comment: Unix timestamp in milliseconds
+  producer:
+    type: string
+  data:
+    type: object
+    properties:
+      id:
+        type: string
+        $comment: UUID
+      email:
+        type: string
+      firstName:
+        type: ["string", "null"]
+      lastName:
+        type: ["string", "null"]
+      role:
+        enum: ["admin", "accountant", "user", "disabled"]
