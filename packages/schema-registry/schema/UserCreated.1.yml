@@ -3,30 +3,39 @@ $schema: http://json-schema.org/draft-07/schema
 title: UserCreated v1
 
 type: object
+required:
+  - id
+  - name
+  - version
+  - ts
+  - payload
 properties:
-  event_id:
+  id:
     type: string
     $comment: UUID
-  event_version:
-    type: number
-  event_name:
+  name:
     const: UserCreated
-  event_time:
+  version:
+    const: 1
+  ts:
     type: number
     $comment: Unix timestamp in milliseconds
   producer:
     type: string
-  data:
+  payload:
     type: object
+    required:
+      - id
+      - email
+      - fullName
+      - role
     properties:
       id:
         type: string
         $comment: UUID
       email:
         type: string
-      firstName:
-        type: ["string", "null"]
-      lastName:
-        type: ["string", "null"]
+      fullName:
+        type: string
       role:
         enum: ["admin", "accountant", "user", "disabled"]

@@ -47,5 +47,8 @@ export default class KafkaProvider {
   /**
    * Preparing to shutdown the app
    */
-  async shutdown() {}
+  async shutdown() {
+    const kafkaProducer = await this.app.container.make('kafka-producer')
+    await kafkaProducer.disconnect()
+  }
 }

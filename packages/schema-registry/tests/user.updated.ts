@@ -1,26 +1,27 @@
 import { describe, test } from 'node:test'
-import assert from 'node:assert'
 import SchemaRegistry from '../src/SchemaRegistry.js'
 
 describe('user.updated', () => {
   test('v1', async () => {
     const event = {
-      event_id: '252c0409-bbc1-44ff-a863-37256316f69e',
-      event_version: 1,
-      event_name: 'UserUpdated',
-      event_time: 1710007436512,
-      producer: 'any-service',
-      data: {
-        id: '5b59f377-826d-48ac-a8e7-333cee1c7be1',
-        email: 'test@example.com',
-        firstName: 'John',
-        lastName: null,
-        role: 'user',
-      },
+      id: '2850c909-a47d-498c-8e63-7b6913c8f46c',
+      name: 'UserUpdated',
+      version: 1,
+      producer: 'auth',
+      ts: 1710021772689,
+      payload: {
+        id: '4d48ebd3-0873-4176-a21c-2dc682aa51af',
+        email: 'john.doe@example.com',
+        fullName: 'New User',
+        role: 'user'
+      }
     }
 
-    const valid = await SchemaRegistry.validate(event, 'user.updated.1')
 
-    assert.equal(valid, true)
+    const result = await SchemaRegistry.validate('UserUpdated', 1, event)
+    if (!result.valid) {
+      console.error(result.errors)
+      throw new Error('Error is invalid')
+    }
   })
 })

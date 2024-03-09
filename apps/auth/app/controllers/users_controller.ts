@@ -4,6 +4,7 @@ import { createUserValidator, updateUserValidator } from '#validators/user'
 import User from '#models/user'
 import UserCreated from '#events/user_created'
 import UserUpdated from '#events/user_updated'
+import { randomUUID } from 'node:crypto'
 
 @inject()
 export default class UsersController {
@@ -20,7 +21,10 @@ export default class UsersController {
   async store({ request, response }: HttpContext) {
     const payload = await request.validateUsing(createUserValidator)
 
-    const user = await User.create(payload)
+    const user = new User()
+    user.fill(payload)
+    user.publicId = randomUUID()
+    await user.save()
 
     await UserCreated.dispatch(user)
 

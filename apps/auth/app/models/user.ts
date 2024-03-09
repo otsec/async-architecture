@@ -14,6 +14,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare id: number
 
   @column()
+  declare publicId: string
+
+  @column()
   declare role: string
 
   @column()
@@ -36,4 +39,8 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+
+  fullName(): string {
+    return [this.firstName, this.lastName].filter((segment) => !!segment).join(' ')
+  }
 }

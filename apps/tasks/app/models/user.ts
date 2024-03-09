@@ -6,6 +6,9 @@ export default class User extends BaseModel {
   declare id: number
 
   @column()
+  declare publicId: string
+
+  @column()
   declare role: string
 
   @column()

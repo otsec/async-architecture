@@ -2,6 +2,8 @@ import env from '#start/env'
 import { Partitioners } from 'kafkajs'
 
 const busConfig = {
+  producerName: 'tasks',
+
   kafka: {
     client: {
       clientId: 'tasks-service',

@@ -4,18 +4,13 @@ import { Kafka, KafkaMessage } from 'kafkajs'
 import busConfig from '#config/bus'
 import { anyEventValidator } from '#validators/event_bus'
 import User from '#models/user'
+import SchemaRegistry from '@popug/schema-registry'
 
-type UserEvent = {
-  name: 'UserCreated' | 'UserUpdated'
-  payload: UserCudEventPayload
-}
-
-type UserCudEventPayload = {
-  id: number
-  role: 'admin' | 'accountant' | 'user' | 'disabled'
-  firstName: string
-  lastName: string
+type UserCudPayload = {
+  id: string
   email: string
+  fullName: string
+  role: string
 }
 
 export default class KafkaConsumer extends BaseCommand {
@@ -61,31 +56,45 @@ export default class KafkaConsumer extends BaseCommand {
 
     const data = JSON.parse(message.value.toString())
     const validated = await anyEventValidator.validate(data)
-    if (validated.name === 'UserCreated' || validated.name === 'UserUpdated') {
-      await this.handleUserCudEvent(validated as UserEvent)
+    if (validated.name === 'UserCreated') {
+      await this.assertValid(validated.name, validated.version, data)
+      await this.handleUserCudEvent(validated.payload as UserCudPayload)
+    } else if (validated.name === 'UserUpdated') {
+      await this.assertValid(validated.name, validated.version, data)
+      await this.handleUserCudEvent(validated.payload as UserCudPayload)
     } else {
       throw new Error(`Unknown event: ${validated.name}`)
     }
   }
 
   async handleError(e: Error, message: KafkaMessage) {
-    console.error(e, 'message', message.value?.toString())
+    console.error(e)
+
+    try {
+      const data = JSON.parse(message.value!.toString())
+      console.log('message json', data)
+    } catch {
+      console.log('message string', message.value?.toString())
+    }
   }
 
-  async handleUserCudEvent(event: UserEvent) {
-    const { firstName, lastName } = event.payload
-    const fullName = [firstName, lastName].filter((segment) => !!segment).join(' ')
+  async assertValid(eventName: string, eventVersion: number, messageBody: unknown) {
+    const result = await SchemaRegistry.validate(eventName, eventVersion, messageBody)
+    if (!result.valid) {
+      console.error(`Invalid event ${eventName} v${eventVersion}`, result.errors)
+      throw new Error(`Invalid event ${eventName} v${eventVersion}`)
+    }
+  }
 
-    console.log('event', event.payload)
-
+  async handleUserCudEvent(data: UserCudPayload) {
     await User.updateOrCreate(
       {
-        id: event.payload.id,
+        publicId: data.id,
       },
       {
-        role: event.payload.role,
-        email: event.payload.email,
-        fullName: fullName,
+        role: data.role,
+        email: data.email,
+        fullName: data.fullName,
       }
     )
   }
