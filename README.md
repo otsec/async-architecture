@@ -11,7 +11,7 @@ Node.js `>= 20.6` is required.
 All ports are hardcoded
 - Zookeeper 2181
 - Kafka 9092, 9101
-- Node Apps 3333, 3334
+- Node Apps 3333, 3334, 3335, 3336
 
 Every service require own domain to properly set session and auth cookies
 
@@ -20,6 +20,8 @@ Every service require own domain to properly set session and auth cookies
 
 127.0.0.1   auth.popug.test
 127.0.0.1   tasks.popug.test
+127.0.0.1   accounting.popug.test
+127.0.0.1   analytics.popug.test
 ```
 
 Start fresh 

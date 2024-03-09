@@ -1,0 +1,33 @@
+@layout({ title: 'Task Tracker' })
+  <div class="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+    <div class="overflow-x-auto">
+      <h2 class="text-5xl font-bold text-gray-900 mb-6">
+        Accounting
+      </h2>
+
+      <h2 class="text-3xl font-bold text-gray-900 mb-3">
+        Team
+      </h2>
+
+      <table class="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
+        <thead class="text-left">
+          <tr>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Name</th>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Email</th>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Role</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-gray-200">
+          @each(user in users)
+          <tr>
+            <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ user.fullName || '' }}</td>
+            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ user.email }}</td>
+            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ user.role }}</td>
+          </tr>
+          @end
+        </tbody>
+      </table>
+    </div>
+  </div>
+@end
