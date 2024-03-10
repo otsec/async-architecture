@@ -14,7 +14,7 @@
         @end
       </div>
 
-      <h2 class="text-3xl font-bold text-gray-900 mb-3">
+      <h2 class="text-3xl font-bold text-gray-900 mb-3 mt-6">
         Team
       </h2>
 
@@ -34,6 +34,38 @@
             <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ user.email }}</td>
             <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ user.role }}</td>
           </tr>
+          @end
+        </tbody>
+      </table>
+
+      <h2 class="text-3xl font-bold text-gray-900 mb-3 mt-6">
+        Tasks
+      </h2>
+
+      <table class="min-w-full divide-y-2 divide-gray-200 bg-white text-sm">
+        <thead class="text-left">
+          <tr>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Title</th>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Description</th>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Assigned To</th>
+            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Status</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-gray-200">
+          @each(task in tasks)
+            <tr>
+              <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ task.title }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ task.description }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ task.assignedTo?.fullName }}</td>
+              <td class="whitespace-nowrap px-4 py-2 text-gray-700">
+                @if(task.isCompleted)
+                  Completed
+                @else
+                  In Progress
+                @end
+              </td>
+            </tr>
           @end
         </tbody>
       </table>
