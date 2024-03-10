@@ -1,7 +1,7 @@
 import { describe, test } from 'node:test'
 import SchemaRegistry from '../src/SchemaRegistry.js'
 
-describe('user.updated', () => {
+describe('UserUpdated', () => {
   test('v1', async () => {
     const event = {
       id: '2850c909-a47d-498c-8e63-7b6913c8f46c',

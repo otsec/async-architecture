@@ -1,0 +1,42 @@
+---
+$schema: http://json-schema.org/draft-07/schema
+title: TaskCreated v1
+
+type: object
+required:
+  - id
+  - name
+  - version
+  - ts
+  - payload
+properties:
+  id:
+    type: string
+    $comment: UUID
+  name:
+    const: TaskCreated
+  version:
+    const: 1
+  ts:
+    type: number
+    $comment: Unix timestamp in milliseconds
+  producer:
+    type: string
+  payload:
+    type: object
+    required:
+      - id
+      - assignedTo
+      - title
+      - description
+    properties:
+      id:
+        type: string
+        $comment: UUID
+      assignedTo:
+        type: string
+        $comment: UUID
+      title:
+        type: string
+      description:
+        type: string
