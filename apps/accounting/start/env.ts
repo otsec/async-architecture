@@ -18,6 +18,9 @@ export default await Env.create(new URL('../', import.meta.url), {
   HOST: Env.schema.string({ format: 'host' }),
   LOG_LEVEL: Env.schema.string(),
 
+  // Event Bus
+  KAFKA_BROKER_1: Env.schema.string(),
+
   /*
   |----------------------------------------------------------
   | Variables for configuring session package

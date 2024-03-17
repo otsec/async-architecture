@@ -1,6 +1,6 @@
 ---
 $schema: http://json-schema.org/draft-07/schema
-title: TaskAssigned v1
+title: BalanceIncreased v1
 
 type: object
 required:
@@ -14,7 +14,7 @@ properties:
     type: string
     $comment: UUID
   name:
-    const: TaskAssigned
+    const: BalanceIncreased
   version:
     const: 1
   ts:
@@ -25,12 +25,16 @@ properties:
   payload:
     type: object
     required:
-      - id
-      - assignedTo
+      - userId
+      - taskId
+      - amount
     properties:
-      id:
+      userId:
         type: string
         $comment: UUID
-      assignedTo:
+      taskId:
         type: string
         $comment: UUID
+      amount:
+        type: number
+        exclusiveMinimum: 0

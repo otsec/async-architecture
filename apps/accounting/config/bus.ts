@@ -2,11 +2,11 @@ import env from '#start/env'
 import { Partitioners } from 'kafkajs'
 
 const busConfig = {
-  producerName: 'tasks',
+  producerName: 'accounting',
 
   kafka: {
     client: {
-      clientId: 'tasks-service',
+      clientId: 'accounting-service',
       brokers: [env.get('KAFKA_BROKER_1')],
     },
 
@@ -15,7 +15,7 @@ const busConfig = {
     },
 
     consumer: {
-      groupId: 'tasks-service',
+      groupId: 'accounting-service',
     },
   },
 }

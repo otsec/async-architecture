@@ -7,7 +7,7 @@ import User from '#models/user'
 import TaskCreated from '#events/task_created'
 import TaskUpdated from '#events/task_updated'
 import TaskCompleted from '#events/task_completed'
-import TaskAssigned from '#events/task_assigned'
+import TaskReassigned from '#events/task_reassigned'
 
 export default class TasksController {
   async index({ view }: HttpContext) {
@@ -28,10 +28,12 @@ export default class TasksController {
       throw new Error('No available workers found')
     }
 
+    const worker = sample(workers)!
+
     const task = new Task()
     task.fill(payload)
     task.publicId = randomUUID()
-    task.assignedToId = sample(workers)!.id
+    task.assignedToId = worker.id
     await task.save()
 
     await TaskCreated.dispatch(task)
@@ -53,7 +55,7 @@ export default class TasksController {
         task.assignedToId = randomWorker.id
         await task.save()
 
-        await TaskAssigned.dispatch(task)
+        await TaskReassigned.dispatch(task)
       }
     }
 

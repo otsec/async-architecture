@@ -54,18 +54,18 @@
 
         <tbody class="divide-y divide-gray-200">
           @each(task in tasks)
-            <tr>
-              <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ task.title }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ task.description }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ task.assignedTo?.fullName }}</td>
-              <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-                @if(task.isCompleted)
-                  Completed
-                @else
-                  In Progress
-                @end
-              </td>
-            </tr>
+          <tr>
+            <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ task.title }}</td>
+            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ task.description }}</td>
+            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ task.assignedTo?.fullName }}</td>
+            <td class="whitespace-nowrap px-4 py-2 text-gray-700">
+              @if(task.isCompleted)
+                Completed
+              @else
+                In Progress
+              @end
+            </td>
+          </tr>
           @end
         </tbody>
       </table>

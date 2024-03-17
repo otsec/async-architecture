@@ -1,16 +1,16 @@
 import { randomUUID } from 'node:crypto'
 import app from '@adonisjs/core/services/app'
+import SchemaRegistry, { UserCreatedPayloadV1, UserUpdatedPayloadV1 } from '@popug/schema-registry'
 import busConfig from '#config/bus'
 import UserCreated from '#events/user_created'
 import UserUpdated from '#events/user_updated'
-import SchemaRegistry from '@popug/schema-registry'
 
 export default class KafkaEventStream {
   async handle(event: unknown) {
     if (event instanceof UserCreated) {
       const user = event.user
 
-      let payload = {
+      let payload: UserCreatedPayloadV1 = {
         id: user.publicId,
         email: user.email,
         fullName: user.fullName(),
@@ -22,7 +22,7 @@ export default class KafkaEventStream {
     if (event instanceof UserUpdated) {
       const user = event.user
 
-      const payload = {
+      const payload: UserUpdatedPayloadV1 = {
         id: user.publicId,
         email: user.email,
         fullName: user.fullName(),

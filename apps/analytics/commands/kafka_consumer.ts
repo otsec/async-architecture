@@ -1,14 +1,22 @@
 import { BaseCommand } from '@adonisjs/core/ace'
 import type { CommandOptions } from '@adonisjs/core/types/ace'
 import { Kafka, KafkaMessage } from 'kafkajs'
+import { DateTime } from 'luxon'
 import SchemaRegistry, {
   UserCreatedPayloadV1,
   UserUpdatedPayloadV1,
+  TaskCreatedPayloadV1,
+  TaskUpdatedPayloadV1,
+  TaskCompletedPayloadV1,
+  BalanceReducedPayloadV1,
+  BalanceIncreasedPayloadV1,
   ValidEvent,
 } from '@popug/schema-registry'
 import busConfig from '#config/bus'
 import { anyEventValidator } from '#validators/event_bus'
 import User from '#models/user'
+import Task from '#models/task'
+import DailyUserStats from '#models/daily_user_stats'
 
 export default class KafkaConsumer extends BaseCommand {
   static commandName = 'kafka:consumer'
@@ -51,13 +59,9 @@ export default class KafkaConsumer extends BaseCommand {
     await this.assertValid(validated.name, validated.version, data)
     const event = validated as ValidEvent
 
+    // prettier-ignore
     const ignoredEvents = [
-      'TaskCreated',
-      'TaskUpdated',
       'TaskReassigned',
-      'TaskCompleted',
-      'BalanceReduced',
-      'BalanceIncreased',
     ]
     if (ignoredEvents.includes(event.name)) {
       return
@@ -67,6 +71,16 @@ export default class KafkaConsumer extends BaseCommand {
       await this.handleUserCudEvent(event.payload)
     } else if (event.name === 'UserUpdated' && event.version === 1) {
       await this.handleUserCudEvent(event.payload)
+    } else if (event.name === 'TaskCreated' && event.version === 1) {
+      await this.handleTaskCreatedEvent(event.payload, event)
+    } else if (event.name === 'TaskUpdated' && event.version === 1) {
+      await this.handleTaskUpdatedEvent(event.payload)
+    } else if (event.name === 'TaskCompleted' && event.version === 1) {
+      await this.handleTaskCompletedEvent(event.payload, event)
+    } else if (event.name === 'BalanceReduced' && event.version === 1) {
+      await this.handleBalanceReducedEvent(event.payload, event)
+    } else if (event.name === 'BalanceIncreased' && event.version === 1) {
+      await this.handleBalanceIncreasedEvent(event.payload, event)
     } else {
       throw new Error(`Unknown event: ${event.name}`)
     }
@@ -102,5 +116,78 @@ export default class KafkaConsumer extends BaseCommand {
         fullName: data.fullName,
       }
     )
+  }
+
+  async handleTaskCreatedEvent(data: TaskCreatedPayloadV1, rawEvent: ValidEvent) {
+    await Task.updateOrCreate(
+      {
+        publicId: data.id,
+      },
+      {
+        title: data.title,
+        createdAt: DateTime.fromMillis(rawEvent.ts),
+      }
+    )
+  }
+
+  async handleTaskUpdatedEvent(data: TaskUpdatedPayloadV1) {
+    await Task.updateOrCreate(
+      {
+        publicId: data.id,
+      },
+      {
+        title: data.title,
+      }
+    )
+  }
+
+  async handleTaskCompletedEvent(data: TaskCompletedPayloadV1, rawEvent: ValidEvent) {
+    await Task.updateOrCreate(
+      {
+        publicId: data.id,
+      },
+      {
+        completedAt: DateTime.fromMillis(rawEvent.ts),
+      }
+    )
+  }
+
+  async handleBalanceReducedEvent(data: BalanceReducedPayloadV1, rawEvent: ValidEvent) {
+    const user = await User.firstOrCreate({
+      publicId: data.userId,
+    })
+
+    const dailyUserStats = await DailyUserStats.firstOrCreate({
+      date: DateTime.fromMillis(rawEvent.ts).toISODate()!,
+      userId: user.id,
+    })
+    // prettier-ignore
+    await DailyUserStats.query()
+      .where('id', dailyUserStats.id)
+      .increment('money_lost', data.amount)
+  }
+
+  async handleBalanceIncreasedEvent(data: BalanceIncreasedPayloadV1, rawEvent: ValidEvent) {
+    await Task.updateOrCreate(
+      {
+        publicId: data.taskId,
+      },
+      {
+        moneyCost: data.amount,
+      }
+    )
+
+    const user = await User.firstOrCreate({
+      publicId: data.userId,
+    })
+
+    const dailyUserStats = await DailyUserStats.firstOrCreate({
+      date: DateTime.fromMillis(rawEvent.ts).toISODate()!,
+      userId: user.id,
+    })
+    // prettier-ignore
+    await DailyUserStats.query()
+      .where('id', dailyUserStats.id)
+      .increment('money_earned', data.amount)
   }
 }
