@@ -1,5 +1,5 @@
 import { HttpContext } from '@adonisjs/core/http'
-import User from 'tasks/app/models/user.js'
+import User from '#models/user'
 
 export default class OauthController {
   async authorize({ auth, request, response }: HttpContext) {

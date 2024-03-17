@@ -1,6 +1,6 @@
 ---
 $schema: http://json-schema.org/draft-07/schema
-title: TaskCompleted v1
+title: TaskReassigned v1
 
 type: object
 required:
@@ -14,7 +14,7 @@ properties:
     type: string
     $comment: UUID
   name:
-    const: TaskCompleted
+    const: TaskReassigned
   version:
     const: 1
   ts:
@@ -26,11 +26,11 @@ properties:
     type: object
     required:
       - id
-      - completedBy
+      - assignedTo
     properties:
       id:
         type: string
         $comment: UUID
-      completedBy:
+      assignedTo:
         type: string
         $comment: UUID

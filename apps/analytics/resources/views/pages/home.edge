@@ -28,6 +28,18 @@
           @end
         </tbody>
       </table>
+
+      <h2 class="text-3xl font-bold text-gray-900 mb-3 mt-7">
+        Daily Stats
+      </h2>
+
+      @each(task in tasks)
+        <pre>{{{ JSON.stringify(task) }}}</pre>
+      @end
+
+      @each(day in stats)
+        <pre>{{{ JSON.stringify(day) }}}</pre>
+      @end
     </div>
   </div>
 @end
